@@ -6,8 +6,19 @@
  * To change this template use File | Settings | File Templates.
  */
 
+// TODO Super
 "use strict";
 
+// TODO Auch super: Hier keine technische Abhängigkeit, sondern "Business-Logik" technikfrei weggekapselt
+
+// TODO Man kann JsDoc-Kommentare mit Tags und Typen versehen
+// TODO Auch WebStorm versteht das
+// TODO https://code.google.com/p/jsdoc-toolkit/wiki/TagReference
+// TODO https://developers.google.com/closure/compiler/docs/js-for-compiler?hl=de
+
+/**
+ * @enum {number}
+ */
 var Farbe = {
 
     WEISS: 0,
@@ -15,16 +26,29 @@ var Farbe = {
 
     /**
      * Liefert die jeweils andere Farbe zurueck
+     *
+     * @param {Farbe} f
+     * @returns {Farbe}
+     * @static
      */
     andere: function (f) {
         return f === Farbe.WEISS ? Farbe.SCHWARZ : Farbe.WEISS;
     },
 
+    /**
+     *
+     * @param {Farbe} f
+     * @returns {string}
+     * @static
+     */
     alsBuchstabe: function (f) {
         return f === Farbe.WEISS ? 'w' : 'b';
     }
 };
 
+/**
+ * @enum {number}
+ */
 var FigurenArt = {
     BAUER: 0,
     SPRINGER: 1,
@@ -42,21 +66,38 @@ var FigurenArt = {
     }
 };
 
+/**
+ * Erzeugt eine neue Figur
+ *
+ * @param {Farbe} farbe
+ * @param {FigurenArt} art
+ * @constructor
+ */
 function Figur(farbe, art) {
     this.farbe = farbe;
     this.art = art;
 }
 
+/**
+ * Erzeugt eine Figur aus einem String.
+ *
+ * @param {String} c
+ * @returns {Figur}
+ * @static
+ */
 Figur.ausBuchstabe = function (c) {
     var art = FigurenArt.ausBuchstabe(c),
         farbe = (c === c.toUpperCase()) ? Farbe.WEISS : Farbe.SCHWARZ;
     return new Figur(farbe, art);
 };
 
+// TODO Welchen Zweck hat die Variable Feld hier? Folgt das einem Pattern?
+// TODO Ist dies ein Modul? Oder sowas wie eine Klasse mit statischen Methoden in Java?
 var Feld = {
 
     nameNachNr: function (name) {
         if (typeof (name) !== "string" || !name.match(/[a-h][1-8]/)) {
+            // TODO Hier lieber Error schmeißen?
             return undefined;
         } else {
             var linie = name.charAt(0),
@@ -66,6 +107,7 @@ var Feld = {
     },
 
     nrNachName: function (nr) {
+        // TODO Wieso ganzzahlige Division? Das Ergebnis ist nicht zwingend ganzzahling. Ist in JS anders als in Java.
         var spalte = nr % 8,
             zeile = (nr - spalte) / 8; // ganzzahlige Division
         return "abcdefgh".charAt(spalte) + (8 - zeile);
@@ -109,6 +151,13 @@ var Feld = {
     }
 };
 
+/**
+ *
+ *
+ * @param a ?
+ * @param b ?
+ * @constructor
+ */
 function Zug(a, b) {
     if (arguments.length === 2) {
         this.von = a;
@@ -119,6 +168,9 @@ function Zug(a, b) {
     }
 }
 
+/**
+ * @static
+ */
 Zug.ausZeichenkette = function(s) {
     var von, nach;
     if (typeof s === "string" && s.match(/[a-h][1-8][a-h][1-8]/)) {
@@ -139,6 +191,11 @@ Zug.prototype.nachZeichenkette = function() {
     return sVon + sNach;
 };
 
+/**
+ *
+ * @param s TODO Was ist das? Alte Stellung?
+ * @constructor
+ */
 function Stellung(s) {
     var zeile, i, aufstellung;
 
@@ -179,6 +236,8 @@ Stellung.prototype.istFrei = function (feld) {
     return this.brett[feld] === undefined;
 };
 
+// TODO Ist das hier node-Stil? Klappt das so? Du checkst auf module.exports, setzt aber nur exports?
+// TODO Wenn das hier node ist, evtl. überlegen ein Modulkonzept zu nehmen, das unabhängig von node ist.
 if (typeof module !== 'undefined' && module.exports) {
     exports.Farbe = Farbe;
     exports.FigurenArt = FigurenArt;
